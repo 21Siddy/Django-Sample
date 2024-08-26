@@ -9,12 +9,12 @@ def index(request):
 
 def suggestion(request):
     new_suggestion = str(limesurvey.get_latest_suggestion())
-    new_item, created = models.Item.objects.get_or_create(item_name=new_suggestion)
-    item_set = models.Item.objects.all().distinct()
+    new_item, created = models.Suggestion.objects.get_or_create(item_name=new_suggestion)
+    item_set = models.Suggestion.objects.all().distinct()
     item_list = [
-        item['item_name'] 
-        for item in item_set.values('item_name') 
-        if item['item_name'] and item['item_name'] != 'None'
+        item['suggestion'] 
+        for item in item_set.values('suggestion') 
+        if item['suggestion'] and item['suggestion'] != 'None'
     ]
     context = {'suggestions': item_list}
     return JsonResponse(context)
