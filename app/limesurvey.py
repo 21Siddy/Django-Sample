@@ -17,7 +17,6 @@ def get_session_key():
     }
 
     response = requests.request("POST", url, json=payload, headers=headers, verify=False)
-    print(response.text)
     key_dict = json.loads(response.text)
     key = key_dict['result']
 
