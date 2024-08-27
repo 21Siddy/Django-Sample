@@ -11,7 +11,7 @@ def index(request):
 
 def suggestion(request):
     new_suggestion = str(limesurvey.get_latest_suggestion())
-    new_item, created = models.Suggestion.objects.get_or_create(item_name=new_suggestion)
+    new_item, created = models.Suggestion.objects.get_or_create(suggestion=new_suggestion)
     item_set = models.Suggestion.objects.all().distinct()
     item_list = [
         item['suggestion'] 
