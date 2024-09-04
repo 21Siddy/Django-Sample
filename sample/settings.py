@@ -9,22 +9,27 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+import environ
+
+env = environ.Env()
+environ.Env.read_env()
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-10^94zc68hx+)r^lz&jn#)na8758d&u5^fl*b&wag+izqt3hod'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG').lower() == "true" 
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = env('ALLOWED_HOSTS').split(" ")
 
 
 # Application definition
@@ -88,7 +93,7 @@ DATABASES = {
 
 import dj_database_url
 DATABASES = {
-    'default' : dj_database_url.parse('postgresql://prelead_database_user:zzhVexEgb25bn9fug7PLOzUbLYPrzDQJ@dpg-cr64uerv2p9s73aml0j0-a.frankfurt-postgres.render.com/prelead_database')
+    'default' : dj_database_url.parse(env('DB_URL'))
 }
 
 

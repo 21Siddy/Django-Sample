@@ -1,13 +1,17 @@
 import requests
 import json
 import base64
+import environ
+
+env = environ.Env()
+environ.Env.read_env()
 
 def get_session_key():
     url = 'https://prelead-admin.limesurvey.net/admin/remotecontrol'
 
     payload = {
         "method" : "get_session_key",
-        "params" : ["prelead-admin", "Siddharth.ad2b"],
+        "params" : [f"{env('LS_USERNAME')}", f"{env('LS_PASSWORD')}"],
         "id" : 1
     }
 
