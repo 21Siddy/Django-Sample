@@ -18,7 +18,7 @@ class Suggestion(models.Model):
 
 #13.09.2024 Schema for participant - suggestion - rating.
 class Rating(models.Model):
-    participant = models.ForeignKey(User, on_delete=models.CASCADE)  # Regular user as a participant
+    participant = models.CharField(max_length=200)  # Regular user as a participant
     suggestion = models.ForeignKey(Suggestion, on_delete=models.CASCADE)
     rating = models.IntegerField(choices=[(i, str(i)) for i in range(1, 6)])
     rated_at = models.DateTimeField(auto_now_add=True)

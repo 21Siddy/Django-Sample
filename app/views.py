@@ -47,7 +47,7 @@ def save_rating(request):
             if rating_value is None or not (1 <= int(rating_value) <= 5):
                 return JsonResponse({"error": "Invalid rating value. Must be between 1 and 5."}, status=400)
 
-            # Get the participant (current logged-in user or a placeholder for testing)
+            # Get the participant (current user or a placeholder for testing)
             participant = f"user{len(models.Suggestion.objects.all())}" 
 
             # Check if the suggestion exists in the database
