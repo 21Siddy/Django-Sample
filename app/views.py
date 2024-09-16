@@ -42,13 +42,13 @@ def save_rating(request):
             data = json.loads(request.body)
             suggestion_text = data.get("solution")
             rating_value = data.get("rating")
-
+            print(f"{suggestion_text} : {rating_value}")
             # Validate the rating value
             if rating_value is None or not (1 <= int(rating_value) <= 5):
                 return JsonResponse({"error": "Invalid rating value. Must be between 1 and 5."}, status=400)
 
             # Get the participant (current logged-in user or a placeholder for testing)
-            participant = User.objects.get(username=f"user{len(models.Suggestion.objects.all())}") 
+            participant = f"user{len(models.Suggestion.objects.all())}" 
 
             # Check if the suggestion exists in the database
             try:
@@ -62,7 +62,7 @@ def save_rating(request):
                 suggestion=suggestion,
                 defaults={'rating': rating_value}
             )
-
+            print(created)
             response_data = {
                 "message": "Rating saved successfully!",
                 "created": created  # True if a new rating, False if updated
