@@ -27,4 +27,4 @@ class Rating(models.Model):
         unique_together = ('participant', 'suggestion')
 
     def __str__(self):
-        return f"{self.participant.username} rated {self.suggestion.suggestion} as {self.rating}"
+        return f"{self.participant} rated {self.suggestion.suggestion} as {self.rating}"
