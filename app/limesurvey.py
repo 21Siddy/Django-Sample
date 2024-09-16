@@ -7,7 +7,7 @@ env = environ.Env()
 environ.Env.read_env()
 
 def get_session_key():
-    url = 'https://prelead-admin.limesurvey.net/admin/remotecontrol'
+    url = 'https://siddharthhemnani-ad2b.limesurvey.net/admin/remotecontrol'
 
     payload = {
         "method" : "get_session_key",
