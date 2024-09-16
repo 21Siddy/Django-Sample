@@ -46,4 +46,3 @@ def get_latest_suggestion():
     latest_response = survey_response_data['responses'][-1]
     suggestion = latest_response["G02Q03"]
     return suggestion
-
