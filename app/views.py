@@ -5,6 +5,8 @@ from django.views.decorators.csrf import csrf_exempt
 from . import limesurvey
 from . import models
 from django.contrib.auth.models import User
+import random
+import string
 # Create your views here.
 def index(request):
     return HttpResponse("Hello")
