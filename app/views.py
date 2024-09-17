@@ -48,7 +48,7 @@ def save_rating(request):
                 return JsonResponse({"error": "Invalid rating value. Must be between 1 and 5."}, status=400)
 
             # Get the participant (current user or a placeholder for testing)
-            username = f"user{len(models.Suggestion.objects.all())}" 
+            username = 'user_' + ''.join(random.choices(string.ascii_lowercase + string.digits, k=10))
             participant = User.objects.create(username=username)
 
             # Check if the suggestion exists in the database
