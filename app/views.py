@@ -55,7 +55,7 @@ def save_rating(request):
 
             # Check if the suggestion exists in the database
             try:
-                suggestion = models.Suggestion.objects.get(suggestion=suggestion)
+                suggestion = models.Suggestion.objects.get(suggestion=suggestion_text)
             except models.Suggestion.DoesNotExist:
                 return JsonResponse({"error": "Suggestion not found."}, status=404)
 
