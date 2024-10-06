@@ -5,8 +5,6 @@ from django.views.decorators.csrf import csrf_exempt
 from . import limesurvey
 from . import models
 from django.contrib.auth.models import User
-import random
-import string
 # Create your views here.
 def index(request):
     return HttpResponse("Hello")
@@ -44,14 +42,14 @@ def save_rating(request):
             data = json.loads(request.body)
             suggestion_text = data.get("solution")
             rating_value = data.get("rating")
+            username = data.get("username")
             print(f"{suggestion_text} : {rating_value}")
             # Validate the rating value
             if rating_value is None or not (1 <= int(rating_value) <= 5):
                 return JsonResponse({"error": "Invalid rating value. Must be between 1 and 5."}, status=400)
 
             # Get the participant (current user or a placeholder for testing)
-            username = 'user_' + ''.join(random.choices(string.ascii_lowercase + string.digits, k=10))
-            participant = User.objects.create(username=username)
+            participant, created = User.objects.get_or_create(username=username)
 
             # Check if the suggestion exists in the database
             try:
