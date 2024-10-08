@@ -50,7 +50,7 @@ def save_rating(request):
 
             # Get the participant (current user or a placeholder for testing)
             participant, created = User.objects.get_or_create(username=username,
-            defaults={'password': 'password123'}  # Provide a default password for new users
+            defaults={'password': 'pq123lamy098'}  # Provide a default password for new users
             )
 
             # Check if the suggestion exists in the database
@@ -63,11 +63,8 @@ def save_rating(request):
             rating, created = models.Rating.objects.update_or_create(
                 participant=participant,
                 suggestion=suggestion,
-                defaults={
-                            'password': 'password123',  # Or a random password
-                            'is_staff': False, #to ensure user can not access admin panel
-                            'is_superuser': False,
-                        })
+                defaults={'rating': rating_value}
+            )
             print(created)
             response_data = {
                 "message": "Rating saved successfully!",
