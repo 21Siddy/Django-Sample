@@ -49,7 +49,9 @@ def save_rating(request):
                 return JsonResponse({"error": "Invalid rating value. Must be between 1 and 5."}, status=400)
 
             # Get the participant (current user or a placeholder for testing)
-            participant, created = User.objects.get_or_create(username=username)
+            participant, created = User.objects.get_or_create(username=username,
+            defaults={'password': 'password123'}  # Provide a default password for new users
+            )
 
             # Check if the suggestion exists in the database
             try:
@@ -61,8 +63,11 @@ def save_rating(request):
             rating, created = models.Rating.objects.update_or_create(
                 participant=participant,
                 suggestion=suggestion,
-                defaults={'rating': rating_value}
-            )
+                defaults={
+                            'password': 'password123',  # Or a random password
+                            'is_staff': False, #to ensure user can not access admin panel
+                            'is_superuser': False,
+                        })
             print(created)
             response_data = {
                 "message": "Rating saved successfully!",
