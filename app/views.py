@@ -2,6 +2,7 @@ import json
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.utils.crypto import get_random_string
 from . import limesurvey
 from . import models
 from django.contrib.auth.models import User
@@ -43,15 +44,18 @@ def save_rating(request):
             suggestion_text = data.get("solution")
             rating_value = data.get("rating")
             username = data.get("username")
+            random_password = get_random_string(length=8)
+
             print(f"{suggestion_text} : {rating_value}")
             # Validate the rating value
             if rating_value is None or not (1 <= int(rating_value) <= 5):
                 return JsonResponse({"error": "Invalid rating value. Must be between 1 and 5."}, status=400)
 
             # Get the participant (current user or a placeholder for testing)
-            participant, created = User.objects.get_or_create(username=username,
-            defaults={'password': 'pq123lamy098'}  # Provide a default password for new users
-            )
+            participant, created = User.objects.get_or_create(username=username)
+            if created:
+                participant.set_password(random_password)  # Securely set the password
+                participant.save()
 
             # Check if the suggestion exists in the database
             try:
