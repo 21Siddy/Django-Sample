@@ -21,8 +21,8 @@ def suggestion(request):
         defaults={'status': 'pending'}
     )
 
-    # Fetch all distinct suggestions from the database
-    item_set = models.Suggestion.objects.all().distinct()
+    # Fetch all distinct suggestions with approved status from the database
+    item_set = models.Suggestion.objects.filter(status='approved')
 
     # Create a list of all suggestion texts
     item_list = [
