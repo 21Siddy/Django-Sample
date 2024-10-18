@@ -43,7 +43,8 @@ def save_rating(request):
             data = json.loads(request.body)
             suggestion_text = data.get("solution")
             rating_value = data.get("rating")
-            username = data.get("username")
+            #username = data.get("username")
+            username = get_random_string(length=5)
             random_password = get_random_string(length=8)
 
             print(f"{suggestion_text} : {rating_value}")
