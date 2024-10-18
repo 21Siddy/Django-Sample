@@ -37,7 +37,7 @@ def suggestion(request):
     ]
 
     # Return all suggestions as JSON response
-    context = {'suggestions': item_list}
+    context = {'suggestions': item_list_all}
     print(item_list_all)
     return JsonResponse(context)
 
