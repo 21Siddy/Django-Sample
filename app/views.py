@@ -21,18 +21,24 @@ def suggestion(request):
         defaults={'status': 'pending'}
     )
 
-    # Fetch all distinct suggestions with approved status from the database
-    item_set = models.Suggestion.objects.filter(status='approved')
+    # Fetch all distinct suggestions from the database
+    item_set_approved = models.Suggestion.objects.filter(status='approved')
+    item_set_all = models.Suggestion.objects.all()
 
     # Create a list of all suggestion texts
     item_list = [
         item['suggestion'] 
-        for item in item_set.values('suggestion') 
-        if item['suggestion'] and item['suggestion'] != 'None'
+        for item in item_set_approved.values('suggestion')
+    ]
+    
+    item_list_all = [
+        item['suggestion'] 
+        for item in item_set_all.values('suggestion')
     ]
 
     # Return all suggestions as JSON response
     context = {'suggestions': item_list}
+    print(item_list_all)
     return JsonResponse(context)
 
 @csrf_exempt
@@ -43,8 +49,9 @@ def save_rating(request):
             data = json.loads(request.body)
             suggestion_text = data.get("solution")
             rating_value = data.get("rating")
-            #username = data.get("username")
-            username = get_random_string(length=5)
+            random_string = get_random_string(length=4)
+            user_counter = 0
+            username = f"lsuser${random_string}${user_counter + 1}"
             random_password = get_random_string(length=8)
 
             print(f"{suggestion_text} : {rating_value}")
@@ -54,9 +61,11 @@ def save_rating(request):
 
             # Get the participant (current user or a placeholder for testing)
             participant, created = User.objects.get_or_create(username=username)
+            user_counter = user_counter + 1
             if created:
                 participant.set_password(random_password)  # Securely set the password
                 participant.save()
+                user_counter = user_counter + 1
 
             # Check if the suggestion exists in the database
             try:
