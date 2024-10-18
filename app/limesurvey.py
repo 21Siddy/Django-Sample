@@ -7,7 +7,8 @@ env = environ.Env()
 environ.Env.read_env()
 
 def get_session_key():
-    url = 'https://alexandersann.limesurvey.net/admin/remotecontrol'
+    #url = 'https://alexandersann.limesurvey.net/admin/remotecontrol'
+    url = 'https://sajjan.limesurvey.net/admin/remotecontrol'
 
     payload = {
         "method" : "get_session_key",
@@ -28,7 +29,8 @@ def get_session_key():
 
 def get_latest_suggestion():
     key = get_session_key()
-    url = 'https://alexandersann.limesurvey.net/admin/remotecontrol'
+    #url = 'https://alexandersann.limesurvey.net/admin/remotecontrol'
+    url = 'https://sajjan.limesurvey.net/admin/remotecontrol'
     payload = {
         "method": "export_responses",
         "params": [key, 288439, 'json', 'en'],
