@@ -1,4 +1,5 @@
 import json
+from django.db import transaction
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -6,6 +7,7 @@ from django.utils.crypto import get_random_string
 from . import limesurvey
 from . import models
 from django.contrib.auth.models import User
+
 # Create your views here.
 def index(request):
     return HttpResponse("Hello")
@@ -36,38 +38,60 @@ def suggestion(request):
         for item in item_set_all.values('suggestion')
     ]
 
-    # Return all suggestions as JSON response
-    context = {'suggestions': item_list_all}
+    # Use atomic transaction to ensure unique username generation
+    with transaction.atomic():
+        # Fetch the latest user with a username starting with 'lsuser$'
+        last_user = User.objects.filter(username__startswith='lsuser$').order_by('-username').first()
+
+        if last_user:
+            # Extract the number from the username and increment
+            last_number = int(last_user.username.split('$')[-1])
+            new_number = last_number + 1
+        else:
+            # Start from lsuser$1 if no such users exist
+            new_number = 1
+
+        # Generate a new username
+        new_username = f'lsuser${new_number}'
+
+    # Return all suggestions as JSON response along with the new username
+    context = {
+        'suggestions': item_list, 
+        'suggestions_all': item_list_all,
+        'username': new_username  # Send this username to the front end
+    }
     print(item_list_all)
     return JsonResponse(context)
 
+
 @csrf_exempt
+@transaction.atomic  # Ensures atomicity to prevent race conditions
 def save_rating(request):
     if request.method == 'POST':
         try:
-            # Parse the incoming JSON data
+            # Parse incoming JSON data
             data = json.loads(request.body)
             suggestion_text = data.get("solution")
             rating_value = data.get("rating")
-            random_string = get_random_string(length=4)
-            user_counter = 0
-            username = f"lsuser${random_string}${user_counter + 1}"
-            random_password = get_random_string(length=8)
+            username = data.get("username")  # Get the username from the frontend
 
-            print(f"{suggestion_text} : {rating_value}")
             # Validate the rating value
             if rating_value is None or not (1 <= int(rating_value) <= 5):
                 return JsonResponse({"error": "Invalid rating value. Must be between 1 and 5."}, status=400)
 
-            # Get the participant (current user or a placeholder for testing)
-            participant, created = User.objects.get_or_create(username=username)
-            user_counter = user_counter + 1
-            if created:
-                participant.set_password(random_password)  # Securely set the password
-                participant.save()
-                user_counter = user_counter + 1
+            # Ensure the username is provided
+            if not username:
+                return JsonResponse({"error": "Username is required."}, status=400)
 
-            # Check if the suggestion exists in the database
+            # Get or create the participant (user) with the provided username
+            participant, created = User.objects.get_or_create(username=username)
+            if created:
+                # Set a random password if this is a new user
+                random_password = get_random_string(length=8)
+                participant.set_password(random_password)
+                participant.save()
+
+            # Check if the suggestion exists
             try:
                 suggestion = models.Suggestion.objects.get(suggestion=suggestion_text)
             except models.Suggestion.DoesNotExist:
@@ -79,7 +103,7 @@ def save_rating(request):
                 suggestion=suggestion,
                 defaults={'rating': rating_value}
             )
-            print(created)
+
             response_data = {
                 "message": "Rating saved successfully!",
                 "created": created  # True if a new rating, False if updated
