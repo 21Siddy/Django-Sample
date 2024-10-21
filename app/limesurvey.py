@@ -7,11 +7,11 @@ env = environ.Env()
 environ.Env.read_env()
 
 def get_session_key():
-    url = 'https://sajjan.limesurvey.net/admin/remotecontrol'
+    url = 'https://survey.prelead.de/limesurvey/index.php/admin/remotecontrol'
 
     payload = {
         "method" : "get_session_key",
-        "params" : [f"{env('LS_USERNAME')}", f"{env('LS_PASSWORD')}"],
+        "params" : [f"{env('LS_USER')}", f"{env('LS_PASS')}"],
         "id" : 1
     }
 
@@ -28,10 +28,10 @@ def get_session_key():
 
 def get_latest_suggestion():
     key = get_session_key()
-    url = 'https://sajjan.limesurvey.net/admin/remotecontrol'
+    url = 'https://survey.prelead.de/limesurvey/index.php/admin/remotecontrol'
     payload = {
         "method": "export_responses",
-        "params": [key, 288439, 'json', 'en'],
+        "params": [key, 849176, 'json', 'en'],
         "id": 1
     }
     headers = {
